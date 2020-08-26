@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/drawerpainter.dart';
+import 'package:flutter_app/paint/paintsection.dart';
 import 'package:flutter_app/sidebar_button.dart';
 
 void main() {
@@ -186,22 +187,42 @@ class _HomePageState extends State<HomePage> {
                                     iconData: Icons.person,
                                     textSize: getSize(0),
                                     height: (menuContainerHeight)/5,
+                                    onpressed: (){
+                                      this.setState(() {
+                                        isMenuOpen = false;
+                                      });
+                                      print("Profile");
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => PaintPage()));
+                                    },
                                   ),
                                   MyButton(
                                     text: "Payments",
                                     iconData: Icons.payment,
                                     textSize: getSize(1),
-                                    height: (menuContainerHeight)/5,),
+                                    height: (menuContainerHeight)/5,
+                                    onpressed: (){
+
+                                      print("Payments");
+                                    },
+                                  ),
                                   MyButton(
                                     text: "Notifications",
                                     iconData: Icons.notifications,
                                     textSize: getSize(2),
-                                    height: (mediaQuery.height/2)/5,),
+                                    height: (mediaQuery.height/2)/5,
+                                    onpressed: (){
+
+                                    },
+                                  ),
                                   MyButton(
                                     text: "Settings",
                                     iconData: Icons.settings,
                                     textSize: getSize(3),
-                                    height: (menuContainerHeight)/5,),
+                                    height: (menuContainerHeight)/5,
+                                    onpressed: (){
+
+                                    },
+                                  ),
 //                                    MyButton(
 //                                      text: "My Files",
 //                                      iconData: Icons.attach_file,

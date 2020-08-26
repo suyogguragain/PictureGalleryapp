@@ -5,8 +5,9 @@ final String text;
 final IconData iconData;
 final double textSize;
 final double height;
+Function onpressed;
 
-MyButton({this.text, this.iconData, this.textSize,this.height});
+MyButton({this.text, this.iconData, this.textSize,this.height,this.onpressed});
 
 @override
 Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ Widget build(BuildContext context) {
         ),
       ],
     ),
-    onPressed: () {},
+    onPressed: onpressed,
   );
 }
 }
