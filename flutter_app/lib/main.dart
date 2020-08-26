@@ -27,6 +27,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
+
   Offset _offset = Offset(0,0);
   GlobalKey globalKey = GlobalKey();
   List<double> limits = [];
@@ -61,6 +63,31 @@ class _HomePageState extends State<HomePage> {
     return size;
   }
 
+  Future<String> createAlertDialog(BuildContext context){
+
+    TextEditingController customController = TextEditingController() ;
+
+    return showDialog(context: context, builder: (context){
+      return AlertDialog(
+        title: Text("Your Name?"),
+        content: TextField(
+          controller: customController,
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            elevation: 5.0,
+            child: Text("Submit"),
+            onPressed: () {
+
+              Navigator.of(context).pop(customController.text.toString());
+
+            } ,
+          )
+        ],
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -68,139 +95,144 @@ class _HomePageState extends State<HomePage> {
     double sidebarSize = mediaQuery.width * 0.65;
     double menuContainerHeight = mediaQuery.height/2;
 
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Color.fromRGBO(255, 65, 108, 1.0),
-              Color.fromRGBO(255, 75, 73, 1.0)
-            ])
-          ),
-          width: mediaQuery.width,
-          child: Stack(
-            children: <Widget>[
-              Center(
-                child: MaterialButton(
-                  onPressed: (){},
-                  color: Colors.white,
-                  child: Text(
-                    "Hello World",
-                    style: TextStyle(color: Colors.black),
-                  ),
+    return Scaffold(
+      key: _scaffoldkey,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(255, 65, 108, 1.0),
+            Color.fromRGBO(255, 75, 73, 1.0)
+          ])
+        ),
+        width: mediaQuery.width,
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: MaterialButton(
+                onPressed: (){
+                  createAlertDialog(context).then((onvalue) {
+                    print('$onvalue');
+                    SnackBar mysnackbar = SnackBar(content: Text("Hello $onvalue"));
+                    _scaffoldkey.currentState.showSnackBar(mysnackbar);
+                  });
+                },
+                color: Colors.white,
+                child: Text(
+                  "Hello World",
+                  style: TextStyle(color: Colors.black),
                 ),
               ),
-              AnimatedPositioned(
-                duration: Duration(milliseconds: 1500),
-                left: isMenuOpen?0: -sidebarSize+20,
-                top: 0,
-                curve: Curves.elasticOut,
-                child: SizedBox(
-                  width: sidebarSize,
-                  child: GestureDetector(
-                    onPanUpdate: (details) {
-                      if (details.localPosition.dx <= sidebarSize){
-                        setState(() {
-                          _offset  = details.localPosition;
-                        });
-                      }
-
-                      if(details.localPosition.dx>sidebarSize-20 && details.delta.distanceSquared>2){
-                        setState(() {
-                          isMenuOpen = true;
-                        });
-                      }
-
-                    },
-                    onPanEnd: (details) {
+            ),
+            AnimatedPositioned(
+              duration: Duration(milliseconds: 1500),
+              left: isMenuOpen?0: -sidebarSize+20,
+              top: 0,
+              curve: Curves.elasticOut,
+              child: SizedBox(
+                width: sidebarSize,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    if (details.localPosition.dx <= sidebarSize){
                       setState(() {
-                        _offset = Offset(0,0);
+                        _offset  = details.localPosition;
                       });
-                    },
-                    child: Stack(
-                      children: <Widget>[
-                        CustomPaint(
-                          size: Size(sidebarSize, mediaQuery.height),
-                          painter: DrawerPainter(offset: _offset),
-                        ),
-                        Container(
-                          height: mediaQuery.height,
-                          width: sidebarSize,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Container(
-                                height: mediaQuery.height*0.25,
-                                child: Center(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Image.asset("assets/dp_default.png",width: sidebarSize/2,),
-                                      Text("Suyog Guragain",style: TextStyle(color: Colors.black45),),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Divider(thickness: 1,),
-                              Container(
-                                key: globalKey,
-                                width: double.infinity,
-                                height: menuContainerHeight,
+                    }
+
+                    if(details.localPosition.dx>sidebarSize-20 && details.delta.distanceSquared>2){
+                      setState(() {
+                        isMenuOpen = true;
+                      });
+                    }
+
+                  },
+                  onPanEnd: (details) {
+                    setState(() {
+                      _offset = Offset(0,0);
+                    });
+                  },
+                  child: Stack(
+                    children: <Widget>[
+                      CustomPaint(
+                        size: Size(sidebarSize, mediaQuery.height),
+                        painter: DrawerPainter(offset: _offset),
+                      ),
+                      Container(
+                        height: mediaQuery.height,
+                        width: sidebarSize,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Container(
+                              height: mediaQuery.height*0.25,
+                              child: Center(
                                 child: Column(
                                   children: <Widget>[
-                                    MyButton(
-                                      text: "Profile",
-                                      iconData: Icons.person,
-                                      textSize: getSize(0),
-                                      height: (menuContainerHeight)/5,
-                                    ),
-                                    MyButton(
-                                      text: "Payments",
-                                      iconData: Icons.payment,
-                                      textSize: getSize(1),
-                                      height: (menuContainerHeight)/5,),
-                                    MyButton(
-                                      text: "Notifications",
-                                      iconData: Icons.notifications,
-                                      textSize: getSize(2),
-                                      height: (mediaQuery.height/2)/5,),
-                                    MyButton(
-                                      text: "Settings",
-                                      iconData: Icons.settings,
-                                      textSize: getSize(3),
-                                      height: (menuContainerHeight)/5,),
+                                    Image.asset("assets/dp_default.png",width: sidebarSize/2,),
+                                    Text("Suyog Guragain",style: TextStyle(color: Colors.black45),),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Divider(thickness: 1,),
+                            Container(
+                              key: globalKey,
+                              width: double.infinity,
+                              height: menuContainerHeight,
+                              child: Column(
+                                children: <Widget>[
+                                  MyButton(
+                                    text: "Profile",
+                                    iconData: Icons.person,
+                                    textSize: getSize(0),
+                                    height: (menuContainerHeight)/5,
+                                  ),
+                                  MyButton(
+                                    text: "Payments",
+                                    iconData: Icons.payment,
+                                    textSize: getSize(1),
+                                    height: (menuContainerHeight)/5,),
+                                  MyButton(
+                                    text: "Notifications",
+                                    iconData: Icons.notifications,
+                                    textSize: getSize(2),
+                                    height: (mediaQuery.height/2)/5,),
+                                  MyButton(
+                                    text: "Settings",
+                                    iconData: Icons.settings,
+                                    textSize: getSize(3),
+                                    height: (menuContainerHeight)/5,),
 //                                    MyButton(
 //                                      text: "My Files",
 //                                      iconData: Icons.attach_file,
 //                                      textSize: getSize(4),
 //                                      height: (menuContainerHeight)/5,),
-                                  ],
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        AnimatedPositioned(
-                          duration: Duration(milliseconds: 400),
-                          right: (isMenuOpen)?10:sidebarSize,
-                          bottom: 30,
-                          child: IconButton(
-                            enableFeedback: true,
-                            icon: Icon(Icons.keyboard_backspace,color: Colors.black45,size: 30,),
-                            onPressed: (){
-                              this.setState(() {
-                                isMenuOpen = false;
-                              });
-                            },
-                          ),
+                      ),
+                      AnimatedPositioned(
+                        duration: Duration(milliseconds: 400),
+                        right: (isMenuOpen)?10:sidebarSize,
+                        bottom: 30,
+                        child: IconButton(
+                          enableFeedback: true,
+                          icon: Icon(Icons.keyboard_backspace,color: Colors.black45,size: 30,),
+                          onPressed: (){
+                            this.setState(() {
+                              isMenuOpen = false;
+                            });
+                          },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
