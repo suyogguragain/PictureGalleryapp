@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/drawerpainter.dart';
+import 'package:flutter_app/focusedpopup/mainscreen.dart';
 import 'package:flutter_app/paint/paintsection.dart';
 import 'package:flutter_app/sidebar_button.dart';
+import 'package:flutter_app/threed/threedimensionview.dart';
 
 void main() {
   runApp(MyApp());
@@ -183,8 +185,8 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 children: <Widget>[
                                   MyButton(
-                                    text: "Profile",
-                                    iconData: Icons.person,
+                                    text: "Paint",
+                                    iconData: Icons.palette,
                                     textSize: getSize(0),
                                     height: (menuContainerHeight)/5,
                                     onpressed: (){
@@ -196,22 +198,29 @@ class _HomePageState extends State<HomePage> {
                                     },
                                   ),
                                   MyButton(
-                                    text: "Payments",
-                                    iconData: Icons.payment,
+                                    text: "Albums",
+                                    iconData: Icons.album,
                                     textSize: getSize(1),
                                     height: (menuContainerHeight)/5,
                                     onpressed: (){
-
-                                      print("Payments");
+                                      this.setState(() {
+                                        isMenuOpen = false;
+                                      });
+                                      print("Albums");
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => Album()));
                                     },
                                   ),
                                   MyButton(
-                                    text: "Notifications",
-                                    iconData: Icons.notifications,
+                                    text: "3D Photos",
+                                    iconData: Icons.threed_rotation,
                                     textSize: getSize(2),
                                     height: (mediaQuery.height/2)/5,
                                     onpressed: (){
-
+                                      this.setState(() {
+                                        isMenuOpen = false;
+                                      });
+                                      print("3D");
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => threeDimensionView()));
                                     },
                                   ),
                                   MyButton(
